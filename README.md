@@ -143,7 +143,7 @@ A lot of rather simple "desktop tools" exist. They can be found on [https://icpc
   
   ```javascript
   var last;
-function setPresentation(id) {
+  function setPresentation(id) {
    //document.getElementById("team"+id).disabled = true;
 
    var xmlhttp = new XMLHttpRequest();
@@ -161,8 +161,8 @@ function setPresentation(id) {
    
    xmlhttp.open("PUT", "present/" + id, true);
    xmlhttp.send();
-}
-```
+  }
+  ```
 
 ## Useful commands
 - `docker-compose up -d` to start all services (remove `-d` to receive full logs realtime)
