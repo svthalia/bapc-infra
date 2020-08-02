@@ -1,0 +1,72 @@
+version: '3'
+services:
+    nginx:
+        container_name: 'nginx'
+        image: 'jwilder/nginx-proxy'
+        restart: 'always'
+        ports:
+            - '80:80'
+            - '443:443'
+        volumes:
+            - '/var/run/docker.sock:/tmp/docker.sock:ro'
+            - '/opt/domjudge/nginx/html/:/usr/share/nginx/html/'
+            - '/opt/domjudge/nginx/conf.d/:/etc/nginx/conf.d/'
+            - '/opt/domjudge/nginx/certs/:/etc/nginx/certs/:ro'
+            - '/opt/domjudge/nginx/vhost.d/:/etc/nginx/vhost.d/'
+            - '/opt/domjudge/nginx/dhparam/:/etc/nginx/dhparam/'
+        environment:
+            DEFAULT_HOST: "bapc-domtest.technicie.nl"
+
+    letsencrypt:
+        image: 'jrcs/letsencrypt-nginx-proxy-companion'
+        restart: 'always'
+        depends_on:
+            - 'nginx'
+        volumes:
+            - '/var/run/docker.sock:/var/run/docker.sock:ro'
+            - '/opt/domjudge/nginx/html/:/usr/share/nginx/html/'
+            - '/opt/domjudge/nginx/conf.d/:/etc/nginx/conf.d/'
+            - '/opt/domjudge/nginx/vhost.d/:/etc/nginx/vhost.d/'
+            - '/opt/domjudge/nginx/dhparam/:/etc/nginx/dhparam/'
+            - '/opt/domjudge/nginx/certs/:/etc/nginx/certs/'
+        environment:
+            NGINX_PROXY_CONTAINER: 'nginx'
+            DEFAULT_EMAIL: 'bapc@thalia.nu'
+    
+    domjudge:
+        build: ./domserver
+        restart: always
+        links:
+            - "dj-mariadb:mariadb"
+        environment:
+            VIRTUAL_HOST: 'bapc-domtest.technicie.nl'
+            LETSENCRYPT_HOST: 'bapc-domtest.technicie.nl'
+            LETSENCRYPT_EMAIL: 'bapc@thalia.nu'
+        env_file:
+            - domserver.env
+            - database.env
+        volumes:
+            - '/opt/domjudge/domjudge-images/affiliation-logos/:/opt/domjudge/domserver/webapp/public/images/affiliations/'
+            - '/opt/domjudge/domjudge-images/team-pictures/:/opt/domjudge/domserver/webapp/public/images/teams/'
+            - '/opt/domjudge/domjudge-images/banner/banner.png:/opt/domjudge/domserver/webapp/public/images/banner.png'
+
+    dj-mariadb:
+        image: mariadb
+        restart: always
+        ports:
+            - "13306:3306"
+        env_file:
+            - database.env
+        volumes:
+            - ./db_conf:/etc/mysql/conf.d
+
+    cds:
+        build: ./cds
+        restart: always
+        ports:
+            - "8443:443"
+        env_file:
+            - cds.env
+        volumes:
+            - '/opt/domjudge/cdsConfig.xml:/opt/wlp/usr/servers/cds/config/cdsConfig.xml'
+            - '/opt/domjudge/contest-data:/contest-data'

@@ -1,0 +1,1 @@
+If you want a team photo to be displayed on the team details page, you can place the image in here as 456.jpg where 456 the team’s numeric ID as shown in the DOMjudge interface. See https://www.domjudge.org/snapshot/manual/config-advanced.html.

@@ -1,0 +1,1 @@
+A page-wide banner can be shown on all pages of the public domjudge interface, if that image is placed in this directory as banner.png

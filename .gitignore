@@ -1,0 +1,7 @@
+*.p12
+*.jks
+*.cache
+*.env
+/nginx/
+cdsConfig.xml
+/contest-data/*
