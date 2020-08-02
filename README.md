@@ -22,12 +22,17 @@ This will do a couple of things.
 - A `CUPS_SERVER` will be set up, used by domjudge to print files to, using the custom print command that can be set in the domjudge configurations.
 - An ICPC tools Contest Data Server docker will be created, to connect with the domserver. In order to correctly function, this server needs some additional setup, though.
 
+#### CDS, nginx proxy and HTTPS
+TODO
+
+
 ### DOMjudge configuration
 To continue setup, we first need to do some configurations in domjudge:
 
 - The domjudge initial admin password will be printed in the docker logs. Note that if you reboot the containter, but without wiping the database, the old admin password will NOT be overwritten with this new value. Resetting the password can be done by running `docker exec -it domjudge_domjudge_1 /opt/domjudge/domserver/webapp/bin/console domjudge:reset-user-password admin`
 - In order for the ICPC Contest Data Server to communicate with Domjudge, it needs API credentials. Therefore, an API reader/writer user account must be created in domjudge. We will need those credentials later
 - To properly set up printing, the print command must be set in the domjudge settings. 
+- TODO wipe database command
 
 ### CDS configuration
 If the contests are correctly set up in Domjudge, we can configure the Contest Data Server to correctly read from Domjudge.
