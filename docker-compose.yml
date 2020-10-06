@@ -14,8 +14,9 @@ services:
             - '/opt/domjudge/nginx/certs/:/etc/nginx/certs/:ro'
             - '/opt/domjudge/nginx/vhost.d/:/etc/nginx/vhost.d/'
             - '/opt/domjudge/nginx/dhparam/:/etc/nginx/dhparam/'
+            - '/opt/domjudge/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
         environment:
-            DEFAULT_HOST: "bapc-domtest.technicie.nl"
+            DEFAULT_HOST: 'domjudge.thalia.nu'
 
     letsencrypt:
         image: 'jrcs/letsencrypt-nginx-proxy-companion'
@@ -29,6 +30,7 @@ services:
             - '/opt/domjudge/nginx/vhost.d/:/etc/nginx/vhost.d/'
             - '/opt/domjudge/nginx/dhparam/:/etc/nginx/dhparam/'
             - '/opt/domjudge/nginx/certs/:/etc/nginx/certs/'
+            - '/opt/domjudge/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
         environment:
             NGINX_PROXY_CONTAINER: 'nginx'
             DEFAULT_EMAIL: 'bapc@thalia.nu'
@@ -39,8 +41,8 @@ services:
         links:
             - "dj-mariadb:mariadb"
         environment:
-            VIRTUAL_HOST: 'bapc-domtest.technicie.nl'
-            LETSENCRYPT_HOST: 'bapc-domtest.technicie.nl'
+            VIRTUAL_HOST: 'domjudge.thalia.nu,contest.thalia.nu,bapc-domtest.technicie.nl'
+            LETSENCRYPT_HOST: 'domjudge.thalia.nu,contest.thalia.nu,bapc-domtest.technicie.nl'
             LETSENCRYPT_EMAIL: 'bapc@thalia.nu'
         env_file:
             - domserver.env

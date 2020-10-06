@@ -14,6 +14,9 @@ Using official Docker images from [https://hub.docker.com/r/domjudge/domserver/]
 This will do a couple of things.
 
 - An nginx proxy server will be started, routing all web traffic on port 80 and 443 to the designated docker container based on that container's virtual hostname (set as environment variable). The folder `nginx` will contain persistent configuration files.
+
+	*If you want to reset your configuration because of some problem, you can simply remove this `nginx` folder and restart. This will recreate all configurations. Note that this will also trigger new requests for certificates, so you should not do this too often to avoid rate-limiting by letsencrypt.*
+
 - A lets-encrypt nginx companion docker will start, providing SSL certificates for the proxy server will start.
 - A mariadb database container will start, to be used by domjudge (with custom configurations from `db_conf`.
 - A custom domjudge domserver docker will be built (based on the official domjudge/domserver container) with some extra configurations in the start script:
@@ -23,7 +26,7 @@ This will do a couple of things.
 - An ICPC tools Contest Data Server docker will be created, to connect with the domserver. In order to correctly function, this server needs some additional setup, though.
 
 #### CDS, nginx proxy and HTTPS
-TODO
+TODO explain how to use the `create_cds_certificate` script etc...
 
 
 ### DOMjudge configuration
@@ -31,8 +34,21 @@ To continue setup, we first need to do some configurations in domjudge:
 
 - The domjudge initial admin password will be printed in the docker logs. Note that if you reboot the containter, but without wiping the database, the old admin password will NOT be overwritten with this new value. Resetting the password can be done by running `docker exec -it domjudge_domjudge_1 /opt/domjudge/domserver/webapp/bin/console domjudge:reset-user-password admin`
 - In order for the ICPC Contest Data Server to communicate with Domjudge, it needs API credentials. Therefore, an API reader/writer user account must be created in domjudge. We will need those credentials later
-- To properly set up printing, the print command must be set in the domjudge settings. 
+- We also need to create a service account for the judgehosts that will be judging our submissions. Probably, domjudge will already create a user for that purpose, but verify that this indeed has happened. You also might want to set the password (read further to see how to configure judgehosts).
+- To properly set up printing, the print command must be set in the domjudge settings.	For example:
+	
+	```bash
+	enscript -b "Location: [location] - Team [teamid] [teamname]|| [original] - Page $% of $=" -a 0-10 -f Courier9 --printer $(echo [location] | sed -e 's/HG075.*/BAPC-north/' -e 's/HG.*/BAPC-south/' -e '/^BAPC/ !s/.*/BAPC-printing/') $([ ! -z [language] ] && echo "--highlight=$(echo [language] | sed 's/py[23]/python/')") [file] 2>&1
+	```
+	This command will add a header with team id and name to each page, as well as selecting the correct printer based on the loaction field (locations starting with 'HG075' will go to printer BAPC-north, other locations with 'HG' will go to BAPC-south and everything else will go to BAPC-printing). 
+	
 - TODO wipe database command
+
+
+#### Configuring a contest
+When everything is setup, you can import the contest and specify the specific settings. When importing problem archives, make sure to be logged in as a user with Jury permissions and associated to a team. This way, after import all test cases that are specified in the problem archive will be submitted and judged for verification in order to check the correct working of the judgehosts. In the "judging verifier", you can then see whether all test cases were correctly verified, or that you might hit some timelimits while that should not be the case. 
+
+For further instructions, we refer to Domjudge's admin documentation.
 
 ### CDS configuration
 If the contests are correctly set up in Domjudge, we can configure the Contest Data Server to correctly read from Domjudge.
@@ -132,7 +148,7 @@ TODO
 TODO
 
 ## Judgehosts
-TODO
+For judgehosts 
 
 
 ## Team systems
