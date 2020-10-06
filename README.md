@@ -22,6 +22,7 @@ This will do a couple of things.
 - A custom domjudge domserver docker will be built (based on the official domjudge/domserver container) with some extra configurations in the start script:
 	- Symfony's `TRUSTED_PROXIES` will be updated to correctly work with the nginx proxy server
 	- Support for an external `CUPS_SERVER` will be set up
+	- Note that we have chosen for a bare installation, so we will not have any demo data but start with a clean database.
 - A `CUPS_SERVER` will be set up, used by domjudge to print files to, using the custom print command that can be set in the domjudge configurations.
 - An ICPC tools Contest Data Server docker will be created, to connect with the domserver. In order to correctly function, this server needs some additional setup, though.
 
@@ -187,7 +188,7 @@ A lot of rather simple "desktop tools" exist. They can be found on [https://icpc
 
 ## Useful commands
 - `docker-compose up -d` to start all services (remove `-d` to receive full logs realtime)
-- `docker-compose down` to stop all services
+- `docker-compose down` to stop all services. Note that this will also remove all data from the database, while `stop` will maintain that data.
 - `docker-compose stop <service>` to stop a single service (similar with `start` or `restart`).
 - `docker-compose build --no-cache <directory>` to do a full rebuild (as this will not automatically happen if you just `docker-compose up`)
 - `docker system prune` to remove old data
