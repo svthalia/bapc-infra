@@ -16,6 +16,7 @@ services:
             - '/opt/domjudge/nginx/dhparam/:/etc/nginx/dhparam/'
             - '/opt/domjudge/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
         environment:
+            ENABLE_IPV6: 'true'
             DEFAULT_HOST: 'domjudge.thalia.nu'
 
     letsencrypt:
@@ -65,10 +66,12 @@ services:
     cds:
         build: ./cds
         restart: always
-        ports:
-            - "8443:443"
         env_file:
             - cds.env
+        environment:
+            VIRTUAL_HOST: 'contestdata.thalia.nu'
+            LETSENCRYPT_HOST: 'contestdata.thalia.nu'
+            LETSENCRYPT_EMAIL: 'bapc@thalia.nu'
         volumes:
             - '/opt/domjudge/cdsConfig.xml:/opt/wlp/usr/servers/cds/config/cdsConfig.xml'
             - '/opt/domjudge/contest-data:/contest-data'

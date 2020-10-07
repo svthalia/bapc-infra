@@ -26,9 +26,8 @@ This will do a couple of things.
 - A `CUPS_SERVER` will be set up, used by domjudge to print files to, using the custom print command that can be set in the domjudge configurations.
 - An ICPC tools Contest Data Server docker will be created, to connect with the domserver. In order to correctly function, this server needs some additional setup, though.
 
-#### CDS, nginx proxy and HTTPS
-TODO explain how to use the `create_cds_certificate` script etc...
-
+#### nginx proxy and HTTPS
+We use an nginx-proxy to forward multiple domains to the correct services, as well as to upgrade to HTTPS using letsencrypt. For domjudge, this is fully supported. The Contest Data Server, however, does not support this fully. It has been said that running the CDS behind an nginx proxy will break stuff (especially websockets), but at least in our configuration it does not (or we have not found anything yet that we use). The only thing that will break, is that the CDS will not show correct ip's for the connected clients in its webinterface, but we can live with that...
 
 ### DOMjudge configuration
 To continue setup, we first need to do some configurations in domjudge:
@@ -52,7 +51,9 @@ When everything is setup, you can import the contest and specify the specific se
 For further instructions, we refer to Domjudge's admin documentation.
 
 ### CDS configuration
-If the contests are correctly set up in Domjudge, we can configure the Contest Data Server to correctly read from Domjudge.
+If the contests are correctly set up in Domjudge, we can configure the Contest Data Server to correctly read from Domjudge. 
+
+It is important to know that, while domjudge supports users creating multiple contests from the webinterface without changing configurations or requiring server access, the CDS does require you to change some configuration file for each contest you want it to work on.
 
 - the `cdsConfig.xml` file is mounted as volume and contains information about the contests that the CDS will work with. Make sure that each contest the CDS must use is configured in here, with the correct API credentials for DOMjudge. An example file could be: 
 
@@ -202,4 +203,5 @@ We would like to give credits to:
 
 - [https://github.com/DOMjudge/domjudge/wiki/Connecting-the-ICPC-Tools-with-DOMjudge](https://github.com/DOMjudge/domjudge/wiki/Connecting-the-ICPC-Tools-with-DOMjudge) (Nicky Gerritsen) for a lot of help
 - [https://github.com/WISVCH/docker-domjudge](https://github.com/WISVCH/docker-domjudge) for some reference material
+- [https://github.com/nginx-proxy/nginx-proxy](https://github.com/nginx-proxy/nginx-proxy) for instructions how to set up the nginx proxy
 

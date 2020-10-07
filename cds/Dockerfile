@@ -28,8 +28,6 @@ COPY users.xml /opt/wlp/usr/servers/cds/users.xml
 
 EXPOSE 80
 
-COPY ["./key.jks", "/opt/wlp/usr/servers/cds/resources/security/key.jks"]
-
 COPY ["./start.sh", "/scripts/start.sh"]
 
 RUN chmod 755 /scripts/start.sh

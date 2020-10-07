@@ -1,2 +1,0 @@
-openssl pkcs12 -export -in /opt/domjudge/nginx/certs/domjudge.thalia.nu/fullchain.pem -inkey /opt/domjudge/nginx/certs/domjudge.thalia.nu/key.pem -out /opt/domjudge/cds/key.p12 -name default -passout pass:ICPCTools
-keytool -noprompt -importkeystore -deststorepass ICPCTools -destkeypass ICPCTools -destkeystore /opt/domjudge/cds/key.jks -srckeystore /opt/domjudge/cds/key.p12 -srcstoretype PKCS12 -srcstorepass ICPCTools -srcalias default -destalias default
