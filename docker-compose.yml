@@ -75,3 +75,17 @@ services:
         volumes:
             - '/opt/domjudge/cdsConfig.xml:/opt/wlp/usr/servers/cds/config/cdsConfig.xml'
             - '/opt/domjudge/contest-data:/contest-data'
+
+    cups:
+        build: ./cups
+        restart: always
+        hostname: bapc-domtest.technicie.nl
+        ports:
+            - '631:631'
+        volumes:
+            - '/opt/domjudge/cups-config/:/etc/cups/'
+            - '/opt/domjudge/nginx/certs/:/etc/cups/ssl/'
+            - '/var/run/dbus:/var/run/dbus'
+        env_file:
+            - cups.env
+
