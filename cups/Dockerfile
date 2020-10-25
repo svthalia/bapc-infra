@@ -1,4 +1,4 @@
-FROM debian:stable
+FROM debian:stretch
 MAINTAINER Study Association Thalia BAPCie <bapc@thalia.nu>
 
 # Install Packages (basic tools, cups, basic drivers, HP drivers)

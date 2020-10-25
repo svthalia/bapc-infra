@@ -147,7 +147,28 @@ TODO
 
 
 ### CUPS configuration
-TODO
+The CUPS server is based on a simple debian image running a container. It does not use the nginx-proxy for SSL (as this would not work), but the service is exposed on port 631 regardless of hostname. The certificates are mounted as a volume, which is a bit hacky, but it works.
+
+All configuration files are persitently mounted at `cups-config/` but can also be managed via the webinterface via HTTP(s) (at port 631). Here, printers can be configured. If the `CUPS_SERVER` variable of Domjudge is set to this server, all prints from domjudge will be sent to the specified (or if not the default) print queue on this server. There are numerous ways to set this up, as you can specify multiple print queues in CUPS and they will all be available to Domjudge. 
+
+Note that this CUPS server is not only accessible to Domjudge: any device can use this print server. To change this, the `cupsd.conf` configuration file can be adapted. 
+
+#### At the Radboud University
+At the Radboud University, with the Peage printing system, it is possible to configure printers directly to this CUPS printserver. For best results, you want to have Direct Printing access to several printers so you can bypass FollowMe printing during a contest. At the Radboud University, this requires a separate functional print account (with a separate e-number login) although probably things could theoretically also work with a student number and KUARIO account. 
+
+The printers should be added as Windows SAMBA printers (this is just smb). The exact URL to use should include the username, password and domain(!) to use. For example, these are 3 printers at the RU:
+
+```
+smb://RU\eXXXXXXXX:PasswordOfTheRUPrintAccount@payprint02.ru.nl/KM-0026-direct
+smb://RU\eXXXXXXXX:PasswordOfTheRUPrintAccount@payprint02.ru.nl/KM-0040-direct
+smb://RU\eXXXXXXXX:PasswordOfTheRUPrintAccount@payprint02.ru.nl/FollowMe
+```
+Note that you might have the encode the password if you cannot authenticate (and please, please, do not forget the `RU\` domain, that took ages to debug). As driver we used the driver provided by university, `FollowMe.ppd` (which is the print driver for the most advanced Konica Minolta MFP available).
+
+Note that you do not print to a printer directly, but print to a virtual print server that the university runs. For Direct Printing this virtual queue does immediately print to the device, so you do not notice this too much. However if you are printing large documents or large numbers of copies, it will take very long (sometimes even more than 10 minutes!) for printers to start receiving the print job. This is because the university virtually proof-prints the jobs before releasing them to the device, to determine the number of pages and print costs. And that takes very long.
+
+Also note that the virtual print server of the RU (or the Konica Minolta machines, but I do not expect that) does NOT support the banner page / job sheet option of CUPS! Somehow, if it is setup, the rest of the printjob is ignored. Otherwise this was the ideal way to realize watermarked print jobs for each team.
+
 
 ## Judgehosts
 For judgehosts 
