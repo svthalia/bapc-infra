@@ -42,6 +42,10 @@ To continue setup, we first need to do some configurations in domjudge:
 	```
 	This command will add a header with team id and name to each page, as well as selecting the correct printer based on the loaction field (locations starting with 'HG075' will go to printer BAPC-north, other locations with 'HG' will go to BAPC-south and everything else will go to BAPC-printing). 
 	
+	```bash
+	enscript -b "Location: [location] - Team [teamid] [teamname]|| [original] - Page $% of $=" -a 0-10 -f Courier9 --printer CUPS-PDF $([ ! -z [language] ] && echo "--highlight=$(echo [language] | sed 's/py[23]/python/')") [file] 2>&1
+	```
+	
 - TODO wipe database command
 
 
@@ -218,6 +222,9 @@ A lot of rather simple "desktop tools" exist. They can be found on [https://icpc
 - `docker-compose exec -it <service> bash` to enter the container of a service
 - `docker-compose cp <service>:<path> ./` to copy some file from inside your container, even if the container is not running. 
 
+- When creating your own problem archives, they must be zipped in the correct wy in order for domjudge to parse it correctly: `zip ../X.zip -r *`. Note that you must `zip` the individual files recursively. `zip X.zip -r X/` will **not** work.
+
+- `aws autoscaling set-desired-capacity --auto-scaling-group-name bapc-runner --desired-capacity 1` to set the judging capacity
 
 ## Credits
 We would like to give credits to:
