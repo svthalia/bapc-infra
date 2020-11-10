@@ -45,9 +45,12 @@ To continue setup, we first need to do some configurations in domjudge:
 	```bash
 	enscript -b "Location: [location] - Team [teamid] [teamname]|| [original] - Page $% of $=" -a 0-10 -f Courier9 --printer CUPS-PDF $([ ! -z [language] ] && echo "--highlight=$(echo [language] | sed 's/py[23]/python/')") [file] 2>&1
 	```
-	
-- TODO wipe database command
+- Make sure to double check the executables for the languages you want to support. For example, if you want to use cpython for judging python submissions, your python run.sh file should call `python3` while PyPy requires `pypy3`. Note that these settings depend on the exact judgehost that you are running (read further).
+- With `./create_database_dump.sh` and `./restore_database_dump.sh <file>` you can create and restore backups
+- You can hook up your own favorite MySQL client to the live database by connecting via an SSH tunnel on port 13306. This is very convenient in most cases because it makes you more flexible than by just using the domjudge webinterface while experimenting.
+- In `domserver/domjudge-images` you find all images that domjudges uses in its interface. Here you can place affiliation logos, team photos and a `banner.png` to be shown on the static public scoreboard. Check the domjudge documentation for further instructions.
 
+Also note that [https://github.com/DOMjudge/domjudge-scripts](https://github.com/DOMjudge/domjudge-scripts) might contain useful scripts.
 
 #### Configuring a contest
 When everything is setup, you can import the contest and specify the specific settings. When importing problem archives, make sure to be logged in as a user with Jury permissions and associated to a team. This way, after import all test cases that are specified in the problem archive will be submitted and judged for verification in order to check the correct working of the judgehosts. In the "judging verifier", you can then see whether all test cases were correctly verified, or that you might hit some timelimits while that should not be the case. 
