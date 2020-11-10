@@ -175,8 +175,10 @@ Also note that the virtual print server of the RU (or the Konica Minolta machine
 
 
 ## Judgehosts
-For judgehosts 
+Our judgehosts are run in EC2 instances in an Auto Scaling configuration. The instances themselves run a modified version of the judghost Docker image.
 
+### Judgehost Docker image
+For the 2020 BAPC prelims it was recommended to run pypy3 for Python 3 submissions. The 7.3.0 DOMjudge server and judgehost did not include the pypy3 command, and [the PR for this](https://github.com/DOMjudge/domjudge/pull/914) would only be included in version 8.0.0 of DOMjudge. We [included the changed `dj_make_chroot`](https://github.com/DOMjudge/domjudge-packaging/blob/0cffbe54db05981d2eb894168a4a7a2910b47766/docker/judgehost/dj_make_chroot) in the build of our own Dockerfile and [overwite the included dj_make_chroot with the new version that includes pypy3](https://github.com/DOMjudge/domjudge-packaging/blob/0cffbe54db05981d2eb894168a4a7a2910b47766/docker/judgehost/Dockerfile.build#L35). Otherwise the judgehost Docker container is built as usual.
 
 ## Team systems
 TODO

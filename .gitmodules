@@ -1,0 +1,3 @@
+[submodule "domjudge-packaging"]
+	path = domjudge-packaging
+	url = https://github.com/DOMjudge/domjudge-packaging
