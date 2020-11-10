@@ -9,12 +9,12 @@ services:
             - '443:443'
         volumes:
             - '/var/run/docker.sock:/tmp/docker.sock:ro'
-            - '/opt/domjudge/nginx/html/:/usr/share/nginx/html/'
-            - '/opt/domjudge/nginx/conf.d/:/etc/nginx/conf.d/'
-            - '/opt/domjudge/nginx/certs/:/etc/nginx/certs/:ro'
-            - '/opt/domjudge/nginx/vhost.d/:/etc/nginx/vhost.d/'
-            - '/opt/domjudge/nginx/dhparam/:/etc/nginx/dhparam/'
-            - '/opt/domjudge/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
+            - './nginx/html/:/usr/share/nginx/html/'
+            - './nginx/conf.d/:/etc/nginx/conf.d/'
+            - './nginx/certs/:/etc/nginx/certs/:ro'
+            - './nginx/vhost.d/:/etc/nginx/vhost.d/'
+            - './nginx/dhparam/:/etc/nginx/dhparam/'
+            - './domserver/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
         environment:
             ENABLE_IPV6: 'true'
             DEFAULT_HOST: 'domjudge.thalia.nu'
@@ -26,12 +26,12 @@ services:
             - 'nginx'
         volumes:
             - '/var/run/docker.sock:/var/run/docker.sock:ro'
-            - '/opt/domjudge/nginx/html/:/usr/share/nginx/html/'
-            - '/opt/domjudge/nginx/conf.d/:/etc/nginx/conf.d/'
-            - '/opt/domjudge/nginx/vhost.d/:/etc/nginx/vhost.d/'
-            - '/opt/domjudge/nginx/dhparam/:/etc/nginx/dhparam/'
-            - '/opt/domjudge/nginx/certs/:/etc/nginx/certs/'
-            - '/opt/domjudge/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
+            - './nginx/html/:/usr/share/nginx/html/'
+            - './nginx/conf.d/:/etc/nginx/conf.d/'
+            - './nginx/vhost.d/:/etc/nginx/vhost.d/'
+            - './nginx/dhparam/:/etc/nginx/dhparam/'
+            - './nginx/certs/:/etc/nginx/certs/'
+            - './nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
         environment:
             NGINX_PROXY_CONTAINER: 'nginx'
             DEFAULT_EMAIL: 'bapc@thalia.nu'
@@ -49,17 +49,17 @@ services:
             - domserver.env
             - database.env
         volumes:
-            - '/opt/domjudge/domjudge-images/:/opt/domjudge/domserver/webapp/public/images/'
+            - './domserver/domjudge-images/:/opt/domjudge/domserver/webapp/public/images/'
 
     dj-mariadb:
         image: mariadb
         restart: always
         ports:
-            - "13306:3306"
+            - '13306:3306'
         env_file:
             - database.env
         volumes:
-            - ./db_conf:/etc/mysql/conf.d
+            - './domserver/db_conf:/etc/mysql/conf.d'
 
     cds:
         build: ./cds
@@ -71,8 +71,8 @@ services:
             LETSENCRYPT_HOST: 'contestdata.thalia.nu'
             LETSENCRYPT_EMAIL: 'bapc@thalia.nu'
         volumes:
-            - '/opt/domjudge/cdsConfig.xml:/opt/wlp/usr/servers/cds/config/cdsConfig.xml'
-            - '/opt/domjudge/contest-data:/contest-data'
+            - './cdsConfig.xml:/opt/wlp/usr/servers/cds/config/cdsConfig.xml'
+            - './contest-data:/contest-data'
 
     cups:
         build: ./cups
@@ -81,8 +81,8 @@ services:
         ports:
             - '631:631'
         volumes:
-            - '/opt/domjudge/cups-config/:/etc/cups/'
-            - '/opt/domjudge/nginx/certs/:/etc/cups/ssl/'
+            - './cups/cups-config/:/etc/cups/'
+            - './nginx/certs/:/etc/cups/ssl/'
             - '/var/run/dbus:/var/run/dbus'
         env_file:
             - cups.env
