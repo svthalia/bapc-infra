@@ -49,9 +49,7 @@ services:
             - domserver.env
             - database.env
         volumes:
-            - '/opt/domjudge/domjudge-images/affiliation-logos/:/opt/domjudge/domserver/webapp/public/images/affiliations/'
-            - '/opt/domjudge/domjudge-images/team-pictures/:/opt/domjudge/domserver/webapp/public/images/teams/'
-            - '/opt/domjudge/domjudge-images/banner/banner.png:/opt/domjudge/domserver/webapp/public/images/banner.png'
+            - '/opt/domjudge/domjudge-images/:/opt/domjudge/domserver/webapp/public/images/'
 
     dj-mariadb:
         image: mariadb

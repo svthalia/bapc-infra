@@ -1,1 +1,0 @@
-Affiliation logos must be placed in this directory as 1234.png where 1234 is the numeric ID of the affiliation as shown in the DOMjudge interface. See https://www.domjudge.org/snapshot/manual/config-advanced.html for more information.

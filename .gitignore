@@ -5,3 +5,5 @@
 /nginx/
 cdsConfig.xml
 /contest-data/*
+/cups-config/ppd/*
+/database_dumps/*
