@@ -218,7 +218,7 @@ WantedBy=multi-user.target
 
 You will probably want to replace the environment variables, and possibly the Docker image used for your contest. To make sure the Docker container can be started quickly, you should pull it now by running `docker pull thalia/judgehost:7.3.1`. As with the other service, you can enable this service to start at boot with: `systemctl enable judgehost.service`.
 
-This is all you need to add to the template image, so now you should remove any temporarly files and possibly the line added to `/etc/hosts` and shutdown. Once shutdown you can create an AMI via this menu:
+This is all you need to add to the template image, so now you should remove any temporarly files and possibly the line added to `/etc/hosts` and shutdown. Once shutdown you can create an AMI via this menu (Create Image option):
 
 ![screenshot from EC2 manager, showing the create image button](create_template.png)
 
