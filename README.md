@@ -180,24 +180,7 @@ Also note that the virtual print server of the RU (or the Konica Minolta machine
 ## Judgehosts
 Our judgehosts are run in EC2 instances in an Auto Scaling configuration. The instances themselves run a modified version of the judgehost Docker image. To create an autoscaling group like this you first need to create a template image that will be used as the disk for all the judgehosts. For this you can use any type of instance, I used a t2.micro instance, with Ubuntu 20.04 LTS. 
 
-Log in to this image and add any ssh keys you want to use. In this AMI the local host is not added to the `/etc/hosts` file, which makes sudo complain with a warning. To fix this, I added a systemd service which adds the host to the hosts file on boot:
-
-```ini
-# /etc/systemd/system/write-hostname.service
-[Unit]
-Description=Write the hostname to /etc/hosts to make sure there are no sudo warnings
-After=network.target
-
-[Service]
-ExecStart=/bin/bash -c 'echo 127.0.0.1 $(hostname) >> /etc/hosts'
-Type=oneshot
-RemainAfterExit=true
-
-[Install]
-WantedBy=multi-user.target
-```
-
-This re-adds the hostname on every boot, but this should not be a problem (and you'll probably boot only once anyway). Add this file to the `/etc/systemd/system` directory and use `systemctl enable write-hostname.service` to enable it at boot.
+Log in to this image and add any ssh keys you want to use. 
 
 To start the Docker container at boot, another systemd service is used:
 ```ini
@@ -207,7 +190,7 @@ Description=DOMJudge judgehost
 After=update-judgehost.target
 
 [Service]
-ExecStart=/usr/bin/docker run --restart=on-failure --network host --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro --name judgehost -e DOMSERVER_BASEURL=https://domjudge.thalia.nu/ -e JUDGEDAEMON_USERNAME=judgehost -e JUDGEDAEMON_PASSWORD=<REPLACEME> thalia/judgehost:7.3.1
+ExecStart=/usr/bin/docker run --restart=on-failure --network host --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro --name judgehost -e DOMSERVER_BASEURL=https://domjudge.thalia.nu/ -e JUDGEDAEMON_USERNAME=judgehost -e JUDGEDAEMON_PASSWORD=<REPLACEME> thalia/judgehost:7.3.3
 Type=exec
 ExecStop=/usr/bin/docker stop judgehost
 Restart=on-failure
@@ -216,7 +199,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
-You will probably want to replace the environment variables, and possibly the Docker image used for your contest. To make sure the Docker container can be started quickly, you should pull it now by running `docker pull thalia/judgehost:7.3.1`. As with the other service, you can enable this service to start at boot with: `systemctl enable judgehost.service`.
+You will probably want to replace the environment variables, and possibly the Docker image used for your contest. To make sure the Docker container can be started quickly, you should pull it now by running `docker pull thalia/judgehost:7.3.3`. As with the other service, you can enable this service to start at boot with: `systemctl enable judgehost.service`.
 
 This is all you need to add to the template image, so now you should remove any temporarly files and possibly the line added to `/etc/hosts` and shutdown. Once shutdown you can create an AMI via this menu (Create Image option):
 
