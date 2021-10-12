@@ -1,9 +1,14 @@
 *.p12
 *.jks
 *.cache
+*.zip-cache
 *.env
 /nginx/
 cdsConfig.xml
-/contest-data/*
+/cds/contest-data/*
 /cups-config/ppd/*
-/database_dumps/*
+/domjudge/database_dumps/*
+/domjudge/domjudge-images
+/cds/present/promo/*
+/cds/present/photos/*
+/cds/present/build/*

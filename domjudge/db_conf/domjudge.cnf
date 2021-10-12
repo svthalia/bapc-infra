@@ -1,0 +1,5 @@
+[mysqld]
+max_connections=1000
+max_allowed_packet=50MB
+innodb_log_file_size=2G
+

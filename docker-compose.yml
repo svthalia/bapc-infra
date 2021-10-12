@@ -14,7 +14,7 @@ services:
             - './nginx/certs/:/etc/nginx/certs/:ro'
             - './nginx/vhost.d/:/etc/nginx/vhost.d/'
             - './nginx/dhparam/:/etc/nginx/dhparam/'
-            - './domserver/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
+            - './domjudge/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
         environment:
             ENABLE_IPV6: 'true'
             DEFAULT_HOST: 'domjudge.thalia.nu'
@@ -31,25 +31,26 @@ services:
             - './nginx/vhost.d/:/etc/nginx/vhost.d/'
             - './nginx/dhparam/:/etc/nginx/dhparam/'
             - './nginx/certs/:/etc/nginx/certs/'
-            - './nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
+            - './domjudge/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
         environment:
             NGINX_PROXY_CONTAINER: 'nginx'
             DEFAULT_EMAIL: 'bapc@thalia.nu'
     
     domjudge:
-        build: ./domserver
+        build: ./domjudge
         restart: always
         links:
             - "dj-mariadb:mariadb"
         environment:
-            VIRTUAL_HOST: 'domjudge.thalia.nu,contest.thalia.nu,bapc-domtest.technicie.nl'
-            LETSENCRYPT_HOST: 'domjudge.thalia.nu,contest.thalia.nu,bapc-domtest.technicie.nl'
+            VIRTUAL_HOST: 'domjudge.thalia.nu,contest.thalia.nu'
+            LETSENCRYPT_HOST: 'domjudge.thalia.nu,contest.thalia.nu'
             LETSENCRYPT_EMAIL: 'bapc@thalia.nu'
         env_file:
-            - domserver.env
-            - database.env
+            - domjudge/domserver.env
+            - domjudge/database.env
         volumes:
-            - './domserver/domjudge-images/:/opt/domjudge/domserver/webapp/public/images/'
+            - './domjudge/domjudge-images/:/opt/domjudge/domserver/webapp/public/images/'
+            - './printjobs:/printjobs'
 
     dj-mariadb:
         image: mariadb
@@ -57,33 +58,22 @@ services:
         ports:
             - '13306:3306'
         env_file:
-            - database.env
+            - domjudge/database.env
         volumes:
-            - './domserver/db_conf:/etc/mysql/conf.d'
+            - './domjudge/db_conf:/etc/mysql/conf.d'
 
     cds:
-        build: ./cds
+        image: 'icpctools/cds:2.4.648'
         restart: always
         env_file:
-            - cds.env
+            - cds/cds.env
         environment:
             VIRTUAL_HOST: 'contestdata.thalia.nu'
+            VIRTUAL_PORT: 8080
             LETSENCRYPT_HOST: 'contestdata.thalia.nu'
             LETSENCRYPT_EMAIL: 'bapc@thalia.nu'
         volumes:
-            - './cdsConfig.xml:/opt/wlp/usr/servers/cds/config/cdsConfig.xml'
-            - './contest-data:/contest-data'
-
-    cups:
-        build: ./cups
-        restart: always
-        hostname: bapc-domtest.technicie.nl
-        ports:
-            - '631:631'
-        volumes:
-            - './cups/cups-config/:/etc/cups/'
-            - './nginx/certs/:/etc/cups/ssl/'
-            - '/var/run/dbus:/var/run/dbus'
-        env_file:
-            - cups.env
+            - './cds/contest-data:/contest'
+            - './cds/cds-present:/opt/wlp/usr/servers/cds/config/present'
+            - './cds/cdsConfig.xml:/opt/wlp/usr/servers/cds/config/cdsConfig.xml'
 
