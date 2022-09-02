@@ -84,6 +84,12 @@ Note that you do not print to a printer directly, but print to a virtual print s
 Also note that the virtual print server of the RU (or the Konica Minolta machines, but I do not expect that) does NOT support the banner page / job sheet option of CUPS! Somehow, if it is setup, the rest of the printjob is ignored. Otherwise this was the ideal way to realize watermarked print jobs for each team.
 
 
+#### VPN tunnel
+To allow the domjudge server to print to the university print servers, a VPN tunnel is required if the server is not running inside the internal RU 
+network. Use the [CNCZ instructions for setting up a VPN tunnel with OpenVPN](https://wiki.cncz.science.ru.nl/Vpn) and the specific openvpn-ca-science.ovpn file in 
+this repo to set up a VPN and tunnel specific traffic via this VPN tunnel.
+
+
 ## Judgehosts
 Our judgehosts are run in EC2 instances in an Auto Scaling configuration. The instances themselves run a modified version of the judgehost Docker image. To create an autoscaling group like this you first need to create a template image that will be used as the disk for all the judgehosts. For this you can use any type of instance, I used a t2.micro instance, with Ubuntu 20.04 LTS. 
 
