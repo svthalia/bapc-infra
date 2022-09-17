@@ -67,15 +67,17 @@ All configuration files are persitently mounted at `cups-config/` but can also b
 
 Note that this CUPS server is not only accessible to Domjudge: any device can use this print server. To change this, the `cupsd.conf` configuration file can be adapted. 
 
+Don't forget to add a default print server for the cups system (this can be done via the web interface on port 631).
+
 #### At the Radboud University
 At the Radboud University, with the Peage printing system, it is possible to configure printers directly to this CUPS printserver. For best results, you want to have Direct Printing access to several printers so you can bypass FollowMe printing during a contest. At the Radboud University, this requires a separate functional print account (with a separate e-number login) although probably things could theoretically also work with a student number and KUARIO account. 
 
 The printers should be added as Windows SAMBA printers (this is just smb). The exact URL to use should include the username, password and domain(!) to use. For example, these are 3 printers at the RU:
 
 ```
-smb://RU\eXXXXXXXX:PasswordOfTheRUPrintAccount@payprint02.ru.nl/KM-0026-direct
-smb://RU\eXXXXXXXX:PasswordOfTheRUPrintAccount@payprint02.ru.nl/KM-0040-direct
-smb://RU\eXXXXXXXX:PasswordOfTheRUPrintAccount@payprint02.ru.nl/FollowMe
+smb://RU\eXXXXXXXX:PasswordOfTheRUPrintAccount@print.hosting.ru.nl/KM-0026-direct
+smb://RU\eXXXXXXXX:PasswordOfTheRUPrintAccount@print.hosting.ru.nl/KM-0040-direct
+smb://RU\eXXXXXXXX:PasswordOfTheRUPrintAccount@print.hosting.ru.nl/FollowMe
 ```
 Note that you might have the encode the password if you cannot authenticate (and please, please, do not forget the `RU\` domain, that took ages to debug). As driver we used the driver provided by university, `FollowMe.ppd` (which is the print driver for the most advanced Konica Minolta MFP available).
 
@@ -83,12 +85,23 @@ Note that you do not print to a printer directly, but print to a virtual print s
 
 Also note that the virtual print server of the RU (or the Konica Minolta machines, but I do not expect that) does NOT support the banner page / job sheet option of CUPS! Somehow, if it is setup, the rest of the printjob is ignored. Otherwise this was the ideal way to realize watermarked print jobs for each team.
 
+##### VPN tunnel
+At the Radboud University, the print server is not accesible from the public network, but only via the local network or VPN. If the domserver is running outside the local network, for example on AWS, you can set up a VPN tunnel to access the printing system.
 
-#### VPN tunnel
-To allow the domjudge server to print to the university print servers, a VPN tunnel is required if the server is not running inside the internal RU 
-network. Use the [CNCZ instructions for setting up a VPN tunnel with OpenVPN](https://wiki.cncz.science.ru.nl/Vpn) and the specific openvpn-ca-science.ovpn file in 
-this repo to set up a VPN and tunnel specific traffic via this VPN tunnel.
+First make sure the print service can be found by adding the correct entries to `/etc/hosts`. At the RU, the print server `print.hosting.ru.nl` is at `131.174.123.28` so we need to add this manual entry `131.174.123.28 print.hosting.ru.nl` to `/etc/hosts`. 
 
+Then, make sure the `openvpn-ca-science.ovpn` file contains `route 131.174.123.28 255.255.255.255` so all traffic to the print server is routed through the VPN tunnel. 
+
+Use the [CNCZ instructions for setting up a VPN tunnel with OpenVPN](https://wiki.cncz.science.ru.nl/Vpn) and the specific openvpn-ca-science.ovpn file in this repo to set up a VPN and tunnel specific traffic via this VPN tunnel. As this needs a Science account for authentication, you need to run this command manually during the contest.
+
+#### Domjudge print command
+To enable the domjudge web printing interface for team members and jury members, a print command should be added. Have a look at the domjudge documentation for what can be setup. Use for example:
+
+`enscript -b "Location: [location] - Team [teamid] [teamname]|| [original] - Page $% of $=" -a 0-10 -f Courier9 $([ ! -z [language] ] && echo "--highlight=$(echo [language] | sed 's/py[23]/python/')") [file] 2>&1`
+
+This will use the default printer on the `CUPS_SERVER` configured for domjudge, and print the team location, id and name, as well as a page number on the page, and it will set up language highlighting (with a fix for python 2 and 3).
+
+Add `--printer $(echo [location] | sed -e 's/HG075.*/BAPC-north/' -e 's/HG.*/BAPC-south/' -e '/^BAPC/ !s/.*/BAPC-printing/')` if you want to select a specific printer based on the team location (here the print queue `BAPC-north` will be used for team locations that start with `HG075.`, `BAPC-south` for all other `HG` locations, and `BAPC-printing` for all locations that dont start with `HG`. `BAPC-south`, `BAPC-north` and `BAPC-printing` here refer to the printer names set up in the cups web interface.
 
 ## Judgehosts
 Our judgehosts are run in EC2 instances in an Auto Scaling configuration. The instances themselves run a modified version of the judgehost Docker image. To create an autoscaling group like this you first need to create a template image that will be used as the disk for all the judgehosts. For this you can use any type of instance, I used a t2.micro instance, with Ubuntu 20.04 LTS. 

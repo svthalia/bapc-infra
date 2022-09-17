@@ -35,8 +35,9 @@ services:
         environment:
             NGINX_PROXY_CONTAINER: 'nginx'
             DEFAULT_EMAIL: 'bapc@thalia.nu'
-    
+
     domjudge:
+        #image: 'domjudge/domserver'
         build: ./domjudge
         restart: always
         links:
@@ -50,6 +51,9 @@ services:
             - domjudge/database.env
         volumes:
             - './domjudge/domjudge-images/:/opt/domjudge/domserver/webapp/public/images/'
+            - './domjudge/custom-css/:/opt/domjudge/domserver/webapp/public/css/custom/'
+            - './domjudge/custom-js/:/opt/domjudge/domserver/webapp/public/js/custom/'
+            - './domjudge/logs/:/opt/domjudge/domserver/webapp/public/log'
             - './printjobs:/printjobs'
 
     dj-mariadb:
@@ -77,3 +81,15 @@ services:
             - './cds/cds-present:/opt/wlp/usr/servers/cds/config/present'
             - './cds/cdsConfig.xml:/opt/wlp/usr/servers/cds/config/cdsConfig.xml'
 
+    cups:
+        build: ./cups
+        restart: always
+        hostname: contest.thalia.nu
+        ports:
+            - '631:631'
+        volumes:
+            - './cups/cups-config/:/etc/cups/'
+            - './nginx/certs/:/etc/cups/ssl/'
+            - '/var/run/dbus:/var/run/dbus'
+        env_file:
+            - cups/cups.env

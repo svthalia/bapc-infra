@@ -6,7 +6,9 @@
 /nginx/
 cdsConfig.xml
 /cds/contest-data/*
-/cups-config/ppd/*
+/cups/cups-config/classes.conf*
+/cups/cups-config/ppd/*
+/cups/cups-config/printers.conf*
 /domjudge/database_dumps/*
 /domjudge/domjudge-images
 /cds/present/promo/*

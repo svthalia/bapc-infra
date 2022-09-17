@@ -10,8 +10,7 @@ RUN apt-get update \
         cups-client cups-bsd \
         && rm -rf /var/lib/apt/lists/*
 
-COPY ["./start.sh", "/scripts/start.sh"]
+COPY ["./cups.sh", "/scripts/start.d/20-cups.sh"]
+COPY ["./docker-gateway-ip.sh", "/scripts/start.d/11-docker.sh"]
 
-RUN chmod 755 /scripts/start.sh
-
-CMD ["/scripts/start.sh"]
+RUN chmod 755 /scripts/start.d/11-docker.sh
