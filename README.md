@@ -116,7 +116,7 @@ Description=DOMJudge judgehost
 After=update-judgehost.target
 
 [Service]
-ExecStart=/usr/bin/docker run --restart=on-failure --network host --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro --name judgehost -e DOMSERVER_BASEURL=https://domjudge.thalia.nu/ -e JUDGEDAEMON_USERNAME=judgehost -e JUDGEDAEMON_PASSWORD=<REPLACEME> thalia/judgehost:7.3.3
+ExecStart=/usr/bin/docker run --restart=on-failure --network host --privileged -v /sys/fs/cgroup:/sys/fs/cgroup:ro --name judgehost -e DOMSERVER_BASEURL=https://domjudge.thalia.nu/ -e JUDGEDAEMON_USERNAME=judgehost -e JUDGEDAEMON_PASSWORD=THEPASSWORDFORTHEJUDGEHOSTUSER domjudge/judgehost:latest
 Type=exec
 ExecStop=/usr/bin/docker stop judgehost
 Restart=on-failure
@@ -125,7 +125,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
-You will probably want to replace the environment variables, and possibly the Docker image used for your contest. To make sure the Docker container can be started quickly, you should pull it now by running `docker pull thalia/judgehost:7.3.3`. As with the other service, you can enable this service to start at boot with: `systemctl enable judgehost.service`.
+You will probably want to replace the environment variables, and possibly the Docker image used for your contest. To make sure the Docker container can be started quickly, you should pull it now by running `docker pull domjudge/judgehost:latest `. As with the other service, you can enable this service to start at boot with: `systemctl enable judgehost.service`.
 
 This is all you need to add to the template image, so now you should remove any temporarly files and possibly the line added to `/etc/hosts` and shutdown. Once shutdown you can create an AMI via this menu (Create Image option):
 
