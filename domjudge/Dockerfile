@@ -1,4 +1,4 @@
-FROM domjudge/domserver:latest
+FROM domjudge/domserver:8.1.3
 MAINTAINER Study Association Thalia BAPCie <bapc@thalia.nu>
 
 
@@ -11,6 +11,5 @@ RUN apt-get update \
         && rm -rf /var/lib/apt/lists/*
 
 COPY ["./cups.sh", "/scripts/start.d/20-cups.sh"]
-COPY ["./docker-gateway-ip.sh", "/scripts/start.d/11-docker.sh"]
 
-RUN chmod 755 /scripts/start.d/11-docker.sh
+RUN chmod 755 /scripts/start.d/20-cups.sh

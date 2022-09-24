@@ -46,6 +46,8 @@ services:
             VIRTUAL_HOST: 'domjudge.thalia.nu,contest.thalia.nu'
             LETSENCRYPT_HOST: 'domjudge.thalia.nu,contest.thalia.nu'
             LETSENCRYPT_EMAIL: 'bapc@thalia.nu'
+            DJ_DB_INSTALL_BARE: '1'
+            TRUSTED_PROXIES: '172.18.0.0/24'
         env_file:
             - domjudge/domserver.env
             - domjudge/database.env
