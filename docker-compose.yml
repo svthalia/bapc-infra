@@ -37,7 +37,6 @@ services:
             DEFAULT_EMAIL: 'bapc@thalia.nu'
 
     domjudge:
-        #image: 'domjudge/domserver'
         build: ./domjudge
         restart: always
         links:
@@ -56,7 +55,6 @@ services:
             - './domjudge/custom-css/:/opt/domjudge/domserver/webapp/public/css/custom/'
             - './domjudge/custom-js/:/opt/domjudge/domserver/webapp/public/js/custom/'
             - './domjudge/logs/:/opt/domjudge/domserver/webapp/public/log'
-            - './printjobs:/printjobs'
 
     dj-mariadb:
         image: mariadb

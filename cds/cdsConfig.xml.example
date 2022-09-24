@@ -1,5 +1,5 @@
 <cds>
-        <contest id="testsession" location="/contest-data/<id>" recordReactions="false">
+        <contest id="testsession" location="/contest/<id>" recordReactions="false">
                 <ccs url="<domjudge-url>/api/contests/<id>" user="cds" password="xxxxxxxxxxxx"/>
         </contest>
 </cds>
