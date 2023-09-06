@@ -67,7 +67,7 @@ services:
             - './domjudge/db_conf:/etc/mysql/conf.d'
 
     cds:
-        image: 'icpctools/cds:2.4.727'
+        image: 'ghcr.io/icpctools/cds:2.5.947'
         restart: always
         env_file:
             - cds/cds.env
