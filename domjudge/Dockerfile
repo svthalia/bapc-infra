@@ -1,4 +1,4 @@
-FROM domjudge/domserver:8.2.1
+FROM domjudge/domserver:8.2.0
 MAINTAINER Study Association Thalia BAPCie <bapc@thalia.nu>
 
 
