@@ -69,7 +69,7 @@ services:
             - domjudge/database.env
         volumes:
             - './domjudge/db_conf:/etc/mysql/conf.d'
-
+            - 'mariadb_data:/var/lib/mysql'
     cds:
         image: 'ghcr.io/icpctools/cds:2.5.947'
         restart: always
@@ -97,3 +97,5 @@ services:
             - '/var/run/dbus:/var/run/dbus'
         env_file:
             - cups/cups.env
+volumes:
+    mariadb_data:
