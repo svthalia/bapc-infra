@@ -37,7 +37,11 @@ services:
             DEFAULT_EMAIL: 'bapc@thalia.nu'
 
     domjudge:
-        build: ./domjudge
+        build:
+          context: ./domjudge
+          args:
+            MAX_MEM: 4G
+            MAX_UPLOAD: 2G
         restart: always
         links:
             - "dj-mariadb:mariadb"
