@@ -14,7 +14,6 @@ services:
             - './nginx/certs/:/etc/nginx/certs/:ro'
             - './nginx/vhost.d/:/etc/nginx/vhost.d/'
             - './nginx/dhparam/:/etc/nginx/dhparam/'
-            - './domjudge/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
         environment:
             ENABLE_IPV6: 'true'
             DEFAULT_HOST: 'domjudge.thalia.nu'
@@ -31,13 +30,16 @@ services:
             - './nginx/vhost.d/:/etc/nginx/vhost.d/'
             - './nginx/dhparam/:/etc/nginx/dhparam/'
             - './nginx/certs/:/etc/nginx/certs/'
-            - './domjudge/nginx-domjudge.conf:/etc/nginx/conf.d/domjudge.conf'
         environment:
             NGINX_PROXY_CONTAINER: 'nginx'
             DEFAULT_EMAIL: 'bapc@thalia.nu'
 
     domjudge:
-        build: ./domjudge
+        build:
+          context: ./domjudge
+          args:
+            MAX_MEM: 4G
+            MAX_UPLOAD: 2G
         restart: always
         links:
             - "dj-mariadb:mariadb"
@@ -65,7 +67,7 @@ services:
             - domjudge/database.env
         volumes:
             - './domjudge/db_conf:/etc/mysql/conf.d'
-
+            - 'mariadb_data:/var/lib/mysql'
     cds:
         image: 'ghcr.io/icpctools/cds:2.5.947'
         restart: always
@@ -93,3 +95,5 @@ services:
             - '/var/run/dbus:/var/run/dbus'
         env_file:
             - cups/cups.env
+volumes:
+    mariadb_data:
